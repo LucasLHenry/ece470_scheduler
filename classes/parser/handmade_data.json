@@ -1,0 +1,155 @@
+{
+    "classes" : [
+        {
+            "class_name" : "ECON 103",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "9:30AM",
+                    "end_time" : "10:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "11:30AM",
+                    "end_time" : "12:20PM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "TWF",
+                    "start_time" : "1:30PM",
+                    "end_time" : "2:20PM"
+                }
+            ]
+        },
+        {
+            "class_name" : "MATH 151",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "9:30AM",
+                    "end_time" : "10:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "12:30PM",
+                    "end_time" : "1:20PM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "TWF",
+                    "start_time" : "2:30PM",
+                    "end_time" : "3:20PM"
+                }
+            ]
+        },
+        {
+            "class_name" : "STAT 252",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "3:30PM",
+                    "end_time" : "4:20PM"
+                }
+            ]
+        },
+        {
+            "class_name" : "ATWP 135",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "10:30AM",
+                    "end_time" : "11:20AM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "TWF",
+                    "start_time" : "12:30AM",
+                    "end_time" : "1:20PM"
+                },
+                {
+                    "section_name" : "A04",
+                    "days" : "TWF",
+                    "start_time" : "9:30AM",
+                    "end_time" : "10:20AM"
+                },
+                {
+                    "section_name" : "A05",
+                    "days" : "TWF",
+                    "start_time" : "10:30AM",
+                    "end_time" : "11:20AM"
+                },
+                {
+                    "section_name" : "A07",
+                    "days" : "MR",
+                    "start_time" : "1:00PM",
+                    "end_time" : "2:20PM"
+                },
+                {
+                    "section_name" : "A08",
+                    "days" : "MR",
+                    "start_time" : "10:00AM",
+                    "end_time" : "11:20AM"
+                },
+                {
+                    "section_name" : "A09",
+                    "days" : "MR",
+                    "start_time" : "11:30AM",
+                    "end_time" : "12:50PM"
+                }
+            ]
+        },
+        {
+            "class_name" : "COM 200",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "9:30AM",
+                    "end_time" : "10:20AM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "TWF",
+                    "start_time" : "10:30AM",
+                    "end_time" : "11:20AM"
+                },
+                {
+                    "section_name" : "A04",
+                    "days" : "TWF",
+                    "start_time" : "12:30PM",
+                    "end_time" : "1:20PM"
+                },
+                {
+                    "section_name" : "A05",
+                    "days" : "TWF",
+                    "start_time" : "1:30PM",
+                    "end_time" : "2:20PM"
+                },
+                {
+                    "section_name" : "A07",
+                    "days" : "TWF",
+                    "start_time" : "2:30PM",
+                    "end_time" : "3:20PM"
+                }
+            ]
+        }
+    ]
+}
