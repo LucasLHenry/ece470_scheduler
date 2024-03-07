@@ -1,7 +1,7 @@
 {
-    "classes" : [
+    "courses" : [
         {
-            "class_name" : "ECON 103",
+            "course_name" : "ECON 103",
             "sections" : [
                 {
                     "section_name" : "A01",
@@ -24,7 +24,7 @@
             ]
         },
         {
-            "class_name" : "MATH 151",
+            "course_name" : "MATH 151",
             "sections" : [
                 {
                     "section_name" : "A01",
@@ -47,7 +47,7 @@
             ]
         },
         {
-            "class_name" : "STAT 252",
+            "course_name" : "STAT 252",
             "sections" : [
                 {
                     "section_name" : "A01",
@@ -58,7 +58,7 @@
             ]
         },
         {
-            "class_name" : "ATWP 135",
+            "course_name" : "ATWP 135",
             "sections" : [
                 {
                     "section_name" : "A01",
@@ -111,7 +111,7 @@
             ]
         },
         {
-            "class_name" : "COM 200",
+            "course_name" : "COM 200",
             "sections" : [
                 {
                     "section_name" : "A01",
