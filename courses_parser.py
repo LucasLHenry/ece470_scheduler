@@ -101,10 +101,9 @@ def gen_time(time_val: int) -> str:
     """
     minutes = time_val % 60
     hours_24 = int((time_val - minutes) / 60)
-    PM = True if hours_24 >= 12 else False
-    PM_str = "PM" if PM else "AM"
+    PM = "PM" if hours_24 >= 12 else "AM"
     hours = hours_24 if hours_24 <= 12 else hours_24 - 12
-    return f"{hours}:{minutes:02d}{PM_str}"
+    return f"{hours}:{minutes:02d}{PM}"
 
 
 def main():  # tests the functions
