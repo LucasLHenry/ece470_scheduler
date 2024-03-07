@@ -8,6 +8,7 @@ class Section:
     end_time: int
     days: str
     
+    @property
     def length(self) -> int:
         return self.end_time - self.start_time
 
@@ -15,7 +16,11 @@ class Section:
 class Course:
     name: str
     sections: list[Section]
-    
+
+@dataclass
 class Schedule:
-    def __init__(self):
-        pass
+    sections: list[Section]
+    
+    @property
+    def num_courses(self) -> int:
+        return len(self.sections)
