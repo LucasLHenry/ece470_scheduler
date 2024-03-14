@@ -13,10 +13,11 @@ def get_all_courses() -> list[Course]:
     """
     courses_list: list[Course] = []
     with open(database_file) as f:
-        db = json.loads(f)
-        courses_list = db["classes"]
-        for crs in courses_list:
+        db = json.load(f)
+        courses_list_dict = db["courses"]
+        for crs in courses_list_dict:
             courses_list.append(gen_course(crs))
+    return courses_list
 
 def find_course(course_str: str) -> Union[Course, bool]:
     """searches for a course with a specified name (ie MATH 100)
@@ -141,6 +142,7 @@ def main():  # tests the functions
     assert 750 == get_time("12:30PM")
     assert 290 == get_time("4:50AM")
     assert 1039 == get_time("5:19PM")
+    print(type(get_all_courses()))
 
 if __name__ == "__main__":
     main()
