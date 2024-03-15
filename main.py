@@ -1,12 +1,13 @@
 # RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
-import scheduler_algo as scheduler
+import courses_scheduler as scheduler
 
 def main():
     print("running the program!")
-    courses_list = parser.get_all_courses()
-    print("all courses: \n", courses_list)
-    schedule = scheduler.test()
+    print("all courses:")
+    parser.list_all_courses(Print = True)
+    courses_list = parser.prompt_for_courses()
+    schedule = scheduler.build_schedule(courses_list)
     print("new schedule:")
     for i in schedule.sections:
         print(i)

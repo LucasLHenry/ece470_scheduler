@@ -21,8 +21,11 @@ class Course:
     def num_sections(self) -> int:
         return len(self.sections)
 
+@dataclass
 class Schedule:
     
+    sections: list[Section]
+
     @property
     def num_courses(self) -> int:
         return len(self.sections)

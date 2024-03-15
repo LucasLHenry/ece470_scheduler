@@ -19,7 +19,18 @@ def get_all_courses() -> list[Course]:
             courses_list.append(gen_course(crs))
     return courses_list
 
-def find_course(course_str: str) -> Union[Course, bool]:
+def list_all_courses(Print = False):
+    """lists the names of all possible courses in the database. Prints the names to terminal if print is true"""
+    names_list = []
+    with open(database_file) as f:
+        db = json.load(f)
+        for crs in db["courses"]:
+            names_list.append(crs["course_name"])
+            if Print:
+                print(crs["course_name"])
+    return names_list
+
+def find_course(course_str: str, Print: bool = False) -> Union[Course, bool]:
     """searches for a course with a specified name (ie MATH 100)
     if it can't find the course, returns False instead of the course object
 
@@ -30,12 +41,32 @@ def find_course(course_str: str) -> Union[Course, bool]:
         Union[Course, bool]: either the course (if it was found) or False, if it was not
     """
     with open(database_file) as f:
-        db = json.loads(f)
-        courses_list = db["classes"]
+        db = json.load(f)
+        courses_list = db["courses"]
         for crs in courses_list:
             if crs["course_name"] == course_str.upper():
+                if Print:
+                    print("Successfully found", course_str)
                 return gen_course(crs)
         return False
+    
+def prompt_for_courses(valid_names: list[str] = False) -> list[Course]:
+    """prompts the user to input a list of course names, then returns a list of the 
+    corresponding courses and sections from the database. Course names must be on valid_names
+    list if given"""
+    print("Enter course names, or a list of names separated by commas. Press enter on a blank line when finished")
+    course_list = []
+    while(True):
+        inpt = input("Add course(s): ")
+        if inpt:
+            if inpt.count(',') == 0:
+                course_list.append(find_course(inpt, Print = True))
+            else:
+                print("not done")
+        else:
+            break
+    return course_list
+
 
 def gen_course(course_dict: dict) -> Union[Course, bool]:
     """generates a course object from a json-parsed dictionary.
