@@ -19,8 +19,15 @@ def get_all_courses() -> list[Course]:
             courses_list.append(gen_course(crs))
     return courses_list
 
-def list_all_courses(Print = False):
-    """lists the names of all possible courses in the database. Prints the names to terminal if print is true"""
+def list_all_courses(Print = False) -> list[str]:
+    """lists the names of all possible courses in the database. 
+    
+    Args:
+        Print (bool): Prints the names to terminal if print is true
+        
+    Returns:
+        list[str]: a list of the names of all the courses in the database
+    """
     names_list = []
     with open(database_file) as f:
         db = json.load(f)
@@ -50,17 +57,23 @@ def find_course(course_str: str) -> Union[Course, bool]:
     
 def prompt_for_courses() -> list[Course]:
     """prompts the user to input a list of course names, then returns a list of the 
-    corresponding courses and sections from the database. Course names must be in database"""
-    print("Enter course names, or a list of names separated by commas. Press enter on a blank line when finished")
+    corresponding courses and sections from the database. Course names must be in database
+    
+    Returns:
+        list[Course]: all the courses it found in the database matching the prompt
+    """
+    print("Enter course names, or a list of names separated by commas. Enter 'all' for all database courses. Press enter on a blank line when finished")
     course_list = []
     while(True):
         inpts = input("Add course(s): ")
-        if inpts:
+        if inpts.upper() == "ALL":
+            return get_all_courses()
+        elif inpts:
             for inpt in inpts.split(","):
                 course = find_course(inpt)
                 if course:
                     course_list.append(course)
-                    print("Successfully added", inpt)
+                    print("Successfully added", course.name)
                 else:
                     print("Failed to find", inpt, "in database")
         else:
