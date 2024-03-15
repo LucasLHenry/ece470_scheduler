@@ -1,9 +1,9 @@
-import json
+import json, os
 from typing import Union
+from classes import *
 
-from classes import Section, Course
-
-database_file = "db.json"
+#database_file = "db.json"
+database_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),"db.json")
 
 def get_all_courses() -> list[Course]:
     """gets all courses from the database file. doesn't throw good errors currently
