@@ -30,12 +30,12 @@ def list_all_courses(Print = False):
                 print(crs["course_name"])
     return names_list
 
-def find_course(course_str: str, Print: bool = False) -> Union[Course, bool]:
+def find_course(course_str: str) -> Union[Course, bool]:
     """searches for a course with a specified name (ie MATH 100)
     if it can't find the course, returns False instead of the course object
 
     Args:
-        course_str (str): input course name. not case sensitive, everything else sensitive
+        course_str (str): input course name. not case sensitive, ignores spaces, everything else sensitive
 
     Returns:
         Union[Course, bool]: either the course (if it was found) or False, if it was not
@@ -44,25 +44,25 @@ def find_course(course_str: str, Print: bool = False) -> Union[Course, bool]:
         db = json.load(f)
         courses_list = db["courses"]
         for crs in courses_list:
-            if crs["course_name"] == course_str.upper():
-                if Print:
-                    print("Successfully found", course_str)
+            if crs["course_name"].replace(" ", "") == course_str.upper().replace(" ", ""):                   
                 return gen_course(crs)
         return False
     
-def prompt_for_courses(valid_names: list[str] = False) -> list[Course]:
+def prompt_for_courses() -> list[Course]:
     """prompts the user to input a list of course names, then returns a list of the 
-    corresponding courses and sections from the database. Course names must be on valid_names
-    list if given"""
+    corresponding courses and sections from the database. Course names must be in database"""
     print("Enter course names, or a list of names separated by commas. Press enter on a blank line when finished")
     course_list = []
     while(True):
-        inpt = input("Add course(s): ")
-        if inpt:
-            if inpt.count(',') == 0:
-                course_list.append(find_course(inpt, Print = True))
-            else:
-                print("not done")
+        inpts = input("Add course(s): ")
+        if inpts:
+            for inpt in inpts.split(","):
+                course = find_course(inpt)
+                if course:
+                    course_list.append(course)
+                    print("Successfully added", inpt)
+                else:
+                    print("Failed to find", inpt, "in database")
         else:
             break
     return course_list
