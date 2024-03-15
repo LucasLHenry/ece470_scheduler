@@ -1,6 +1,6 @@
 # RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
-from classes import *
+from classes import Schedule, Section, Course
 import operator
 
 def sort_courses(courses_list) -> list[Course]:

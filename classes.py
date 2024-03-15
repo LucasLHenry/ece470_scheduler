@@ -12,6 +12,7 @@ class Section:
     def length(self) -> int:
         return self.end_time - self.start_time
 
+
 @dataclass
 class Course:
     name: str
@@ -26,12 +27,11 @@ class Schedule:
     
     sections: list[Section]
 
+    def __init__(self):
+        self.sections = []
     @property
     def num_courses(self) -> int:
         return len(self.sections)
-    
-    def __init__(self):
-        self.sections = []
 
     def add(self, sectn):
         self.sections.append(sectn)
@@ -42,6 +42,13 @@ class Schedule:
     def section_is_valid(self, sectn) -> bool:
         """checks to see if a section fits into this schedule"""
         for scheduled_sectn in self.sections:
-            if (sectn.days == scheduled_sectn.days) and ((sectn.start_time >= scheduled_sectn.start_time and sectn.start_time <= scheduled_sectn.end_time) or (sectn.end_time >= scheduled_sectn.start_time and sectn.end_time <= scheduled_sectn.end_time)):
+            if overlap(scheduled_sectn, sectn):
                 return False
         return True
+
+
+def overlap(s1: Section, s2: Section) -> bool:
+    if s1.days != s2.days: return False
+    if s1.start_time <= s2.start_time and s1.end_time > s2.start_time: return True
+    if s2.start_time <= s1.start_time and s2.end_time > s1.start_time: return True
+    return False
