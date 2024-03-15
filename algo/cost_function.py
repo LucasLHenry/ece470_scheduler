@@ -3,23 +3,57 @@
 from datetime import datetime, timedelta
 
 def cost(Schedule) -> float:
+
     cost = check_overlap(Schedule)
     print(f"The total cost is {cost} hours.")
     return cost # easiest implementation is amount of overlapping time
 
-# function to check for overlap between two time intervals
+
 def calculate_overlap(interval1_start, interval1_end, interval2_start, interval2_end):
+    """
+    Calculates the overlap in hours between two time intervals.
+
+    Args:
+        interval1_start (datetime): start time of the first interval.
+        interval1_end (datetime): end time of the first interval.
+        interval2_start (datetime): start time of the second interval.
+        interval2_end (datetime): end time of the second interval.
+
+    Returns:
+        float: Overlap in hours between the two intervals.
+    """
     latest_start = max(interval1_start, interval2_start)
     earliest_end = min(interval1_end, interval2_end)
     overlap = (earliest_end - latest_start).total_seconds() / 3600
     return max(0, overlap)
 
-# function to convert time strings to datetime objects
-def parse_time(time_str):
-    return datetime.strptime(time_str, '%I:%M %p')
-def check_overlap(schedule_list):
 
-    # convert time strings in the schedule list to datetime objects
+def parse_time(time_str):
+    """
+    Parses a time string into a datetime object.
+
+    Args:
+        time_str (str): time string
+
+    Returns:
+        datetime: parsed datetime object.
+    """
+    return datetime.strptime(time_str, '%I:%M %p')
+
+def check_overlap(schedule_list):
+    """
+    Calculates the total overlap in hours between schedules.
+
+    Args:
+        schedule_list (list[Schedule]): list of schedules representing schedules.
+            should contain keys 'start_time', 'end_time', and 'days'.
+            'start_time' and 'end_time' should be in the format '%I:%M %p'.
+            'days' should be a string representing days of the week 'MTWRF'.
+
+    Returns:
+        float: total overlap in hours.
+    """
+
     for schedule in schedule_list:
         schedule['start_time'] = parse_time(schedule['start_time'])
         schedule['end_time'] = parse_time(schedule['end_time'])
