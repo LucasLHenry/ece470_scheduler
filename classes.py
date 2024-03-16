@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from aux_functions import gen_time
 
 @dataclass
 class Section:
@@ -11,6 +12,9 @@ class Section:
     @property
     def length(self) -> int:
         return self.end_time - self.start_time
+    
+    def __str__(self):
+        return f"{self.course_name} section {self.section_name}: {gen_time(self.start_time)} to {gen_time(self.end_time)}"
 
 
 @dataclass

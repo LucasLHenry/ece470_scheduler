@@ -11,7 +11,8 @@ def main():
     schedule = scheduler.build_schedule(courses_list)
     print("new schedule:")
     overlap = cost.total_cost(schedule) #testing cost function
-    print(f"the total overlap cost is: {overlap}")
+    print(f"\nthe total overlap cost is: {overlap}")
+    print("SCHEDULE")
     for i in schedule.sections:
         print(i)
 
