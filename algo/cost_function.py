@@ -1,90 +1,49 @@
-#from classes import Course, Section, Schedule
-#from classes import Schedule, Section, Course
-from datetime import datetime, timedelta
-
-def cost(Schedule) -> float:
-
-    cost = check_overlap(Schedule)
-    print(f"The total cost is {cost} hours.")
-    return cost # easiest implementation is amount of overlapping time
+from classes import Course, Section, Schedule
 
 
-def calculate_overlap(interval1_start, interval1_end, interval2_start, interval2_end):
-    """
-    Calculates the overlap in hours between two time intervals.
+def total_cost(sch: Schedule) -> int:
+    """total number of overlap in minutes of a schedule is calculated. Days are considered
 
     Args:
-        interval1_start (datetime): start time of the first interval.
-        interval1_end (datetime): end time of the first interval.
-        interval2_start (datetime): start time of the second interval.
-        interval2_end (datetime): end time of the second interval.
+        sch (Schedule): schedule object
 
     Returns:
-        float: Overlap in hours between the two intervals.
+        int: total overlap in minutes
     """
-    latest_start = max(interval1_start, interval2_start)
-    earliest_end = min(interval1_end, interval2_end)
-    overlap = (earliest_end - latest_start).total_seconds() / 3600
-    return max(0, overlap)
+    total_overlap_minutes = 0
+    for i, course1 in enumerate(sch.sections):
+        for course2 in sch.sections[i+1:]:
+            section1 = course1
+            section2 = course2
+            common_days = set(section1.days).intersection(section2.days)
+
+            for day in common_days:
+                start1 = section1.start_time
+                end1 = section1.end_time
+                start2 = section2.start_time
+                end2 = section2.end_time
+
+                overlap_minutes = calculate_overlap(start1, end1, start2, end2)
+                total_overlap_minutes += overlap_minutes
+
+    return total_overlap_minutes  # easiest implementation is amount of overlapping time
 
 
-def parse_time(time_str):
-    """
-    Parses a time string into a datetime object.
+def calculate_overlap(start1, end1, start2, end2):
+    """calculates amount of overlap
 
     Args:
-        time_str (str): time string
+        start1 (int): start time for first section
+        end1 (int): end time for first section
+        start2 (int): start time for second section
+        end2 (int): end time for second section
+
 
     Returns:
-        datetime: parsed datetime object.
+        int: amount of overlap
     """
-    return datetime.strptime(time_str, '%I:%M %p')
+    latest_start = max(start1, start2)
+    earliest_end = min(end1, end2)
+    overlap = max(0, earliest_end - latest_start)
 
-def check_overlap(schedule_list):
-    """
-    Calculates the total overlap in hours between schedules.
-
-    Args:
-        schedule_list (list[Schedule]): list of schedules representing schedules.
-            should contain keys 'start_time', 'end_time', and 'days'.
-            'start_time' and 'end_time' should be in the format '%I:%M %p'.
-            'days' should be a string representing days of the week 'MTWRF'.
-
-    Returns:
-        float: total overlap in hours.
-    """
-
-    for schedule in schedule_list:
-        schedule['start_time'] = parse_time(schedule['start_time'])
-        schedule['end_time'] = parse_time(schedule['end_time'])
-
-    overlap_hours = {}
-
-    # check for overlaps
-    for i in range(len(schedule_list)):
-        for j in range(i + 1, len(schedule_list)):
-            schedule1 = schedule_list[i]
-            schedule2 = schedule_list[j]
-
-            # check for overlap for each day of the week
-            for day in schedule1['days']:
-                if day in schedule2['days']:
-                    overlap = calculate_overlap(schedule1['start_time'], schedule1['end_time'],
-                                                schedule2['start_time'], schedule2['end_time'])
-                    overlap_hours[day] = overlap_hours.get(day, 0) + overlap
-
-    total_overlap = sum(overlap_hours.values())
-    return total_overlap
-
-
-def main():  # tests the functions
-    # test case:
-    Schedules = [
-        {'start_time': '8:00 AM', 'end_time': '10:00 AM', 'days': 'MF'},
-        {'start_time': '8:00 AM', 'end_time': '3:00 PM', 'days': 'MTF'},
-        {'start_time': '7:00 AM', 'end_time': '4:00 PM', 'days': 'MWF'},
-    ]
-    cost(Schedules)
-
-if __name__ == "__main__":
-    main()
+    return overlap
