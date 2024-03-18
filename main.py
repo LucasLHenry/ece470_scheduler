@@ -4,7 +4,7 @@ import courses_scheduler as scheduler
 import algo.cost_function as cost
 
 def main():
-    print("running the program!")
+    print("Welcome to the automated UVic course scheduler!")
     print("all courses:")
     parser.list_all_courses(Print = True)
     courses_list = parser.prompt_for_courses()

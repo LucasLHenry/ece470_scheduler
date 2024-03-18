@@ -66,11 +66,11 @@ def output(sched: Schedule):
     """
     days = {"M": [], "T": [], "W": [], "R": [], "F": []}
     day_names = {
-    "M": "Monday",
-    "T": "Tuesday",
-    "W": "Wednesday",
-    "R": "Thursday",
-    "F": "Friday"
+    "M": "MONDAY",
+    "T": "TUESDAY",
+    "W": "WEDNESDAY",
+    "R": "THURSDAY",
+    "F": "FRIDAY"
     }
     for course in sched.sections:
         for day in course.days:
@@ -80,10 +80,10 @@ def output(sched: Schedule):
         if len(days[day]) == 0:
             print(f"{day_names[day]}: No Classes")
         else:
-            print(day_names[day] + ":")
+            print(f"{day_names[day]}:")
             sorted_courses = sorted(days[day], key=lambda cour: cour.start_time)
             for course in sorted_courses:
-                print(course)
+                print(f"\t{course}")
 
 
 def test():
