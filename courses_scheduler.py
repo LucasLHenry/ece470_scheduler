@@ -55,7 +55,7 @@ def build_schedule(courses_list) -> Schedule:
     print("impossible to include all classes in schedule")
     return False
 
-def output(sched: Schedule) -> bool:
+def output(sched: Schedule):
     """Prints schedule found in a nice way for user to see
 
     Args:
