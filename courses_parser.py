@@ -34,8 +34,9 @@ def list_all_courses(Print = False) -> list[str]:
         db = json.load(f)
         for crs in db["courses"]:
             names_list.append(crs["course_name"])
-            if Print:
-                print(crs["course_name"])
+    if Print:
+        for crs in sorted(names_list):
+            print(crs)
     return names_list
 
 def find_course(course_str: str) -> Union[Course, bool]:

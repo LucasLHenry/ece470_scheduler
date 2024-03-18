@@ -150,6 +150,74 @@
                     "end_time" : "3:20PM"
                 }
             ]
+        },
+        {
+            "course_name" : "ANTH 200",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "T",
+                    "start_time" : "2:30PM",
+                    "end_time" : "4:20PM"
+                }
+            ]
+        },
+        {
+            "course_name" : "THEA 150",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "T",
+                    "start_time" : "6:00PM",
+                    "end_time" : "8:50PM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "W",
+                    "start_time" : "6:00PM",
+                    "end_time" : "8:50PM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "R",
+                    "start_time" : "6:00PM",
+                    "end_time" : "8:50PM"
+                },
+                {
+                    "section_name" : "A04",
+                    "days" : "M",
+                    "start_time" : "6:00PM",
+                    "end_time" : "8:50PM"
+                }
+            ]
+        },
+        {
+            "course_name" : "COM 100",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "MR",
+                    "start_time" : "2:30PM",
+                    "end_time" : "3:50PM"
+                },
+                {
+                    "section_name" : "A01",
+                    "days" : "MR",
+                    "start_time" : "10:00AM",
+                    "end_time" : "11:20AM"
+                }
+            ]
+        },
+        {
+            "course_name" : "GEOG 101B",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "MR",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:50AM"
+                }
+            ]
         }
     ]
 }
