@@ -13,8 +13,8 @@ def main():
     overlap = cost.total_cost(schedule) #testing cost function
     print(f"\nthe total overlap cost is: {overlap}")
     print("SCHEDULE")
-    for i in schedule.sections:
-        print(i)
+
+    scheduler.output(schedule)
 
 
 if __name__ == "__main__":

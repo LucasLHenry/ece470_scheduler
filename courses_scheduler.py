@@ -54,7 +54,37 @@ def build_schedule(courses_list) -> Schedule:
         return schedule
     print("impossible to include all classes in schedule")
     return False
-    
+
+def output(sched: Schedule) -> bool:
+    """Prints schedule found in a nice way for user to see
+
+    Args:
+        sched (Schedule): schedule object
+
+    Returns:
+        Printed schedule with courses in order of days and time from monday to friday
+    """
+    days = {"M": [], "T": [], "W": [], "R": [], "F": []}
+    day_names = {
+    "M": "Monday",
+    "T": "Tuesday",
+    "W": "Wednesday",
+    "R": "Thursday",
+    "F": "Friday"
+    }
+    for course in sched.sections:
+        for day in course.days:
+            days[day].append(course)
+
+    for day in days:
+        if len(days[day]) == 0:
+            print(f"{day_names[day]}: No Classes")
+        else:
+            print(day_names[day] + ":")
+            sorted_courses = sorted(days[day], key=lambda cour: cour.start_time)
+            for course in sorted_courses:
+                print(course)
+
 
 def test():
     courses_list = parser.get_all_courses()
