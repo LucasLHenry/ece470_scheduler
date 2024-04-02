@@ -218,6 +218,68 @@
                     "end_time" : "9:50AM"
                 }
             ]
+        },
+        {
+            "course_name" : "CSC 103",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "MR",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:50AM"
+                }
+            ]
+        },
+        {
+            "course_name" : "CSC 105",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "10:30AM",
+                    "end_time" : "11:20AM"
+                }
+            ]
+        },
+        {
+            "course_name" : "CSC 110",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "TWF",
+                    "start_time" : "9:30AM",
+                    "end_time" : "10:20AM"
+                },
+                {
+                    "section_name" : "A02",
+                    "days" : "TWF",
+                    "start_time" : "2:30PM",
+                    "end_time" : "3:20PM"
+                },
+                {
+                    "section_name" : "A03",
+                    "days" : "TWF",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:20AM"
+                }
+            ]
+        },
+        {
+            "course_name" : "ECE 216",
+            "sections" : [
+                {
+                    "section_name" : "A01",
+                    "days" : "MR",
+                    "start_time" : "8:30AM",
+                    "end_time" : "9:50AM"
+                }
+            ]
         }
     ]
 }
