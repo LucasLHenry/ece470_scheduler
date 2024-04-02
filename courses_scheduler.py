@@ -37,11 +37,12 @@ def recur_schedule(courses_list: list[Course], curr_schedule: Schedule = Schedul
                 curr_schedule.remove(sectn)
     return curr_schedule, False
 
-def build_schedule(courses_list) -> Schedule:
+def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:
     """organizes course list and initializes recursive scheduler
     
     Args:
         courses_list (list[Course]): courses to be added to the schedule
+        num_courses_goal (int): number of courses desired by user
 
     Returns:
         Schedule: successful schedule with added courses. Empty schedule if unsuccessful

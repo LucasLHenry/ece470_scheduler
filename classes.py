@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from aux_functions import gen_time
+from typing import Optional
 
 @dataclass
 class Section:
@@ -21,6 +22,7 @@ class Section:
 class Course:
     name: str
     sections: list[Section]
+    priority: Optional[int] = None
 
     @property
     def num_sections(self) -> int:

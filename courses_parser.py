@@ -57,30 +57,71 @@ def find_course(course_str: str) -> Union[Course, bool]:
                 return gen_course(crs)
         return False
     
-def prompt_for_courses() -> list[Course]:
+def parse_priority(priority_str: str) -> Optional[int]:
+    """parses a priority value into its corresponding integer
+
+    Args:
+        priority_str (str): the priority level as a string
+
+    Returns:
+        Optional[int]: _returns None if the parsing failed, and the integer if it didn't
+    """
+    try:
+        priority_int = int(priority_str)
+    except ValueError:
+        return None
+    if priority_int < 1 or priority_int > 3:
+        return None
+    return priority_int
+    
+def prompt_for_courses() -> tuple[list[Course], int]:
     """prompts the user to input a list of course names, then returns a list of the 
     corresponding courses and sections from the database. Course names must be in database
     
     Returns:
-        list[Course]: all the courses it found in the database matching the prompt
+        tuple[list[Course], int]: all the courses it found in the database matching the prompt, 
+        with priority fields filled, as well as number of desired courses.
     """
-    print("Enter course names, or a list of names separated by commas. Enter 'all' for all database courses. Press enter on a blank line when finished")
+    print("Enter course names. Enter 'all' for all database courses. Press enter on a blank line when finished.")
+    print("After each course entered, give the priority level for that course. 1 is top priority (required courses),")
+    print("2 is medium priority (electives), and 3 is lowest priority (bad electives)")
     course_list = []
     while(True):
-        inpts = input("Add course(s): ")
-        if inpts.upper() == "ALL":
+        inpt = input("Add course(s): ")
+        if inpt.upper() == "ALL":
             return get_all_courses()
-        elif inpts:
-            for inpt in inpts.split(","):
-                course = find_course(inpt)
-                if course:
-                    course_list.append(course)
-                    print("Successfully added", course.name)
-                else:
-                    print("Failed to find", inpt, "in database")
+        elif inpt:
+            course = find_course(inpt)
+            if course:
+                # get priority level for course
+                while True:
+                    priority_str = input(f"priority for {course.name}: ")
+                    priority_int = parse_priority(priority_str)
+                    if priority_int is not None:
+                        course.priority = priority_int
+                        break
+                    else:
+                        print("priority int must be an integer between 1 and 3")
+                course_list.append(course)
+                print("Successfully added", course.name)
+            else:
+                print("Failed to find", inpt, "in database")
         else:
             break
-    return course_list
+    
+    # get number of desired courses
+    while True:
+        num_courses_inpt = input("How many courses do you want: ")
+        try:
+            desired_num_courses = int(num_courses_inpt)
+        except ValueError:
+            print("number of classes must be an integer")
+            continue
+        if desired_num_courses < 1 or desired_num_courses > len(course_list):
+            print("number of courses must be greater than 0 and less than or equal to the number of courses entered")
+            continue
+        break
+    return course_list, desired_num_courses
 
 
 def gen_course(course_dict: dict) -> Union[Course, bool]:
