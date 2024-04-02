@@ -27,9 +27,6 @@ class Course:
     @property
     def num_sections(self) -> int:
         return len(self.sections)
-    
-    def __str__(self) -> str:
-        return f"{self.name}, {len(self.sections)} sections"
 
 @dataclass
 class Schedule:

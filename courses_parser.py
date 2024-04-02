@@ -24,7 +24,7 @@ def list_all_courses(Print = False) -> list[str]:
     """lists the names of all possible courses in the database. 
     
     Args:
-        Print (bool): Prints the names to terminal if print is true
+        Print (bool): Prints the names and number of sections to terminal if print is true
         
     Returns:
         list[str]: a list of the names of all the courses in the database
