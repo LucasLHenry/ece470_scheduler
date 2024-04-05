@@ -1,7 +1,7 @@
 # RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
 from classes import Schedule, Section, Course
-import operator
+import operator, copy
 
 def sort_courses(courses_list) -> list[Course]:
     """sorts courses by number of available sections to make search tree more efficient. 
@@ -15,13 +15,15 @@ def sort_courses(courses_list) -> list[Course]:
     return sorted(courses_list, key=lambda Course: Course.num_sections)
 
 def recur_schedule(courses_list: list[Course], num_courses_goal: int, sched_list: list[Schedule] = [], curr_schedule: Schedule = Schedule(), curr_course_index: int = 0) -> tuple[Schedule, bool]:
-    """recursively explores the solution space until it finds a solved schedule
+    """recursively explores the solution space until it finds all possible schedules
     Args:
         courses_list (list[Course]): courses to be added to the schedule
         curr_schedule (Schedule): schedule that courses will be added to. Acts as the nodes of the tree
         curr_course_index (int): internal to recursion, used to keep track of how many courses have been added. Node counter in tree
 
     Returns:
+        Bool: True if all courses have been checked, false otherwise
+        list[Schedule]: list of possible schedules that either have the goal number of courses, or as close as could be attained with a particular course
         Schedule: successful schedule with added courses. Empty schedule if unsuccessful
         Bool: True if successful, False if unable to find a schedule that includes all courses
     """
@@ -29,7 +31,7 @@ def recur_schedule(courses_list: list[Course], num_courses_goal: int, sched_list
         return True, sched_list, curr_schedule, curr_course_index
     
     if curr_schedule.num_sections == num_courses_goal:
-        sched_list.append(curr_schedule)
+        sched_list.append(copy.deepcopy(curr_schedule))
         return False, sched_list, curr_schedule, curr_course_index - 1
     
     curr_section_index = 0
@@ -42,15 +44,15 @@ def recur_schedule(courses_list: list[Course], num_courses_goal: int, sched_list
             no_more_courses, sched_list, curr_schedule, new_course_index = recur_schedule(courses_list, num_courses_goal, sched_list, curr_schedule, curr_course_index + 1)
             if no_more_courses:
                 return True, sched_list, curr_schedule, curr_course_index
-            else:
-                curr_schedule.remove(sectn)
+            curr_schedule.remove(sectn)
+            
         if new_course_index == curr_course_index:
             curr_section_index += 1
         else:
             curr_course_index = new_course_index
             curr_section_index = 0
-
-    sched_list.append(curr_schedule)
+    
+    sched_list.append(copy.deepcopy(curr_schedule))
     return False, sched_list, curr_schedule, curr_course_index 
 
 def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:

@@ -122,8 +122,8 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         except ValueError:
             print("number of classes must be an integer")
             continue
-        if desired_num_courses < 1 or desired_num_courses > len(course_list):
-            print("number of courses must be greater than 0 and less than or equal to the number of courses entered")
+        if desired_num_courses < 1:
+            print("number of courses must be greater than 0")
             continue
         break
     return course_list, desired_num_courses
