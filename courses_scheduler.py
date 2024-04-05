@@ -14,7 +14,7 @@ def sort_courses(courses_list) -> list[Course]:
     """
     return sorted(courses_list, key=lambda Course: Course.num_sections)
 
-def recur_schedule(courses_list: list[Course], curr_schedule: Schedule = Schedule(), curr_course_index: int = 0) -> tuple[Schedule, bool]:
+def recur_schedule(courses_list: list[Course], num_courses_goal: int, sched_list: list[Schedule] = [], curr_schedule: Schedule = Schedule(), curr_course_index: int = 0) -> tuple[Schedule, bool]:
     """recursively explores the solution space until it finds a solved schedule
     Args:
         courses_list (list[Course]): courses to be added to the schedule
@@ -26,16 +26,32 @@ def recur_schedule(courses_list: list[Course], curr_schedule: Schedule = Schedul
         Bool: True if successful, False if unable to find a schedule that includes all courses
     """
     if curr_course_index == len(courses_list):
-        return curr_schedule, True
-    for sectn in courses_list[curr_course_index].sections:
+        return True, sched_list, curr_schedule, curr_course_index
+    
+    if curr_schedule.num_sections == num_courses_goal:
+        sched_list.append(curr_schedule)
+        return False, sched_list, curr_schedule, curr_course_index - 1
+    
+    curr_section_index = 0
+    new_course_index = curr_course_index
+
+    while curr_section_index < courses_list[curr_course_index].num_sections:
+        sectn = courses_list[curr_course_index].sections[curr_section_index]
         if curr_schedule.section_is_valid(sectn):
             curr_schedule.add(sectn)
-            sched, check = recur_schedule(courses_list, curr_schedule, curr_course_index + 1)
-            if check:
-                return sched, True
+            no_more_courses, sched_list, curr_schedule, new_course_index = recur_schedule(courses_list, num_courses_goal, sched_list, curr_schedule, curr_course_index + 1)
+            if no_more_courses:
+                return True, sched_list, curr_schedule, curr_course_index
             else:
                 curr_schedule.remove(sectn)
-    return curr_schedule, False
+        if new_course_index == curr_course_index:
+            curr_section_index += 1
+        else:
+            curr_course_index = new_course_index
+            curr_section_index = 0
+
+    sched_list.append(curr_schedule)
+    return False, sched_list, curr_schedule, curr_course_index 
 
 def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:
     """organizes course list and initializes recursive scheduler
@@ -50,11 +66,9 @@ def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedul
         Bool: False if unsuccessful
     """
     courses_list = sort_courses(courses_list)
-    schedule, check = recur_schedule(courses_list)
-    if check:
-        return schedule
-    print("impossible to include all classes in schedule")
-    return False
+    no_more_courses, schedule_list, curr_schedule, curr_course_index = recur_schedule(courses_list, num_courses_goal)
+    return schedule_list
+
 
 def output(sched: Schedule):
     """Prints schedule found in a nice way for user to see

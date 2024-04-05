@@ -2,6 +2,7 @@ import json, os
 from typing import Union
 from classes import *
 from aux_functions import get_time, gen_time
+import random, math
 
 database_filename = "db.json"
 database_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), database_filename)
@@ -85,12 +86,15 @@ def prompt_for_courses() -> tuple[list[Course], int]:
     """
     print("Enter course names. Enter 'all' for all database courses. Press enter on a blank line when finished.")
     print("After each course entered, give the priority level for that course. 1 is top priority (required courses),")
-    print("2 is medium priority (electives), and 3 is lowest priority (bad electives)")
+    print("2 is medium priority (electives), and 3 is lowest priority (backup electives)")
     course_list = []
     while(True):
         inpt = input("Add course(s): ")
         if inpt.upper() == "ALL":
-            return get_all_courses()
+            course_list = get_all_courses()
+            for course in course_list:
+                course.priority = int(math.ceil(3*random.random()))
+            break
         elif inpt:
             course = find_course(inpt)
             if course:
