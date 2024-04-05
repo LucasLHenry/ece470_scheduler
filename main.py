@@ -9,16 +9,16 @@ def main():
     parser.list_all_courses(Print = True)
     courses_list, desired_num_classes = parser.prompt_for_courses()
     schedule = scheduler.build_schedule(courses_list, desired_num_classes)
-    print("new schedule:")
-    print(f"number of possible schedules: {len(schedule)}")
-    print(schedule)
-    for i in schedule[0].sections:
-        print(i)
-    # overlap = cost.total_cost(schedule) #testing cost function
-    # print(f"\nthe total overlap cost is: {overlap}")
-    print("SCHEDULE")
+    if schedule == False:
+        print("failed to find valid schedule")
+    else:
+        print("new schedule:")
+        scheduler.output(schedule)
+    # print(schedule)
+    # # overlap = cost.total_cost(schedule) #testing cost function
+    # # print(f"\nthe total overlap cost is: {overlap}")
+    # print("SCHEDULE")
 
-    # scheduler.output(schedule)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from aux_functions import gen_time
 from typing import Optional
 
@@ -35,6 +35,7 @@ class Schedule:
 
     def __init__(self):
         self.sections = []
+    
     @property
     def num_sections(self) -> int:
         return len(self.sections)
@@ -45,7 +46,7 @@ class Schedule:
     def remove(self, sectn):
         self.sections.remove(sectn)
 
-    def section_is_valid(self, sectn) -> bool:
+    def section_is_valid(self, sectn: Section) -> bool:
         """checks to see if a section fits into this schedule without duplicate courses"""
         for scheduled_sectn in self.sections:
             if self.overlap(scheduled_sectn, sectn) or scheduled_sectn.course_name == sectn.course_name:
