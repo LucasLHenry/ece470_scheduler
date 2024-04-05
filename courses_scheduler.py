@@ -80,27 +80,48 @@ def course_in_schedule(schedule: Schedule, course: Course) -> bool:
             return True
     return False
 
-def get_next_course(schedule: Schedule, course_list: list[Course]) -> Optional[Course]:
-    best_course: Optional[Course] = None
+def get_next_courses(schedule: Schedule, course_list: list[Course]) -> Optional[list[Course]]:
+    highest_priority = 3
+    courses = []
     for course in course_list:
         if not course_in_schedule(schedule, course):
-            if best_course is None or best_course.priority > course.priority: best_course = course
-    return best_course
+            if course.priority == highest_priority: courses.append(course)
+            elif course.priority < highest_priority:
+                highest_priority = course.priority
+                courses = [course]
+    if len(courses) != 0: return courses
+    return None
+
+def get_sorted_sections(course_list: list[Course], schedule: Schedule) -> list[Section]:
+    # all courses in this course list have the same priority, so the only thing that matters is the cost function
+    sections: list[Section] = []
+    costs: list[int] = []
+    for course in course_list:
+        for section in course.sections:
+            sections.append(section)
+            # calc cost of schedule with
+            schedule.add(section)
+            costs.append(-schedule.cost()) # do negative to sort from min to max
+            schedule.remove(section)
+    sorted_sections = [sec for _, sec in sorted(zip(costs, sections), key=lambda c_sec: c_sec[0])]
+    return sorted_sections
             
 
 def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_desired_courses: int) -> Optional[Schedule]:
     # if assignment is complete, return assignment
     if curr_schedule.num_sections == num_desired_courses: return Schedule
-    next_course = get_next_course(curr_schedule, course_list)
+    next_courses = get_next_courses(curr_schedule, course_list)
     # no more classes to pick from, but not at desired number. User error, decide to interpret as success
-    if next_course is None: return Schedule 
+    if next_courses is None: return Schedule 
     
-    for section in next_course.sections:
-        if curr_schedule.section_is_valid(section):
-            curr_schedule.add(section)
-            result: Optional[Schedule] = backtracking_search(curr_schedule, course_list, num_desired_courses)
-            if result is not None: return result
-            curr_schedule.remove(section)
+    # this is where cost function gets applied
+    sorted_sections = get_sorted_sections(next_courses, curr_schedule)
+    
+    for section in sorted_sections:
+        curr_schedule.add(section)
+        result: Optional[Schedule] = backtracking_search(curr_schedule, course_list, num_desired_courses)
+        if result is not None: return result
+        curr_schedule.remove(section)
     return None
     
     

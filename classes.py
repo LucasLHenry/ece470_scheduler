@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from aux_functions import gen_time
+from aux_functions import gen_time, get_time
 from typing import Optional
 
 @dataclass
@@ -53,7 +53,7 @@ class Schedule:
                 return False
         return True
        
-    def overlap(self, s1: Section, s2: Section) -> bool:
+    def overlap(s1: Section, s2: Section) -> bool:
         all_days_diff = True
         for char1 in s1.days:
             if -1 != s2.days.find(char1): all_days_diff = False
@@ -61,3 +61,22 @@ class Schedule:
             if s1.start_time <= s2.start_time and s1.end_time > s2.start_time: return True
             if s2.start_time <= s1.start_time and s2.end_time > s1.start_time: return True
         return False
+    
+    def cost(self) -> int:
+        # optimize for not too early, not too late
+        
+        # make the margins tight so that more schedules will have nonzero cost
+        nice_start_time = get_time("11:00AM")
+        nice_end_time = get_time("1:00PM")
+        
+        start_time_offsets: dict[str, int] = {"M": 0, "T": 0, "W": 0, "R": 0, "F": 0}
+        end_time_offsets  : dict[str, int] = {"M": 0, "T": 0, "W": 0, "R": 0, "F": 0}
+        for section in self.sections:
+            start_diff = nice_start_time - section.start_time
+            end_diff = section.end_time - nice_end_time
+            for day in section.days:
+                if start_diff > start_time_offsets[day]: start_time_offsets[day] = start_diff
+                if end_diff > end_time_offsets[day]: end_time_offsets[day] = end_diff
+        return sum(start_time_offsets.values()) + sum(end_time_offsets.values())
+                    
+                
