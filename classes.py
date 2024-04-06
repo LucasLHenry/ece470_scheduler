@@ -71,8 +71,17 @@ class Schedule:
     
     def cost(self, future_courses_to_be_added, curr_section_to_be_added) -> float:
         """cost is calculated as priority (highest priority is zero cost, 2nd highest is 1 cost, etc) plus the normalized number of future sections (sections that have yet to be added to the schedule) that this course will overlap with (0 means the course does not overlap with any future sections, 1 means it will overlap with every future section)"""
-        cost = curr_section_to_be_added.course_priority - 1
-        return cost
+        priority_cost = curr_section_to_be_added.course_priority - 1
+
+        overlap_cost = 0
+        future_courses_checked = 0
+        for future_course in future_courses_to_be_added:
+            for future_section in future_course.sections:
+                if self.section_is_valid(future_section):
+                    future_courses_checked += 1
+                    if self.does_overlap(curr_section_to_be_added, future_section): overlap_cost += 1
+
+        return priority_cost + overlap_cost/future_courses_checked
     # def cost(self, future_courses_to_be_added, curr_section_to_be_added) -> int:
     #     # optimize for not too early, not too late
         
