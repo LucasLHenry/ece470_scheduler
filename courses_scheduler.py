@@ -57,7 +57,7 @@ def sort_courses(courses_list) -> list[Course]:
 #     return False, sched_list, curr_schedule, curr_course_index 
 
 def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:
-    """organizes course list and initializes recursive scheduler
+    """initializes recursive scheduler
     
     Args:
         courses_list (list[Course]): courses to be added to the schedule
@@ -85,24 +85,23 @@ def get_next_courses(schedule: Schedule, course_list: list[Course]) -> Optional[
     courses = []
     for course in course_list:
         if not course_in_schedule(schedule, course):
-            if course.priority == highest_priority: courses.append(course)
-            elif course.priority < highest_priority:
-                highest_priority = course.priority
-                courses = [course]
+            courses.append(course)
+            # if course.priority == highest_priority: courses.append(course)
+            # elif course.priority < highest_priority:
+            #     highest_priority = course.priority
+            #     courses = [course]
     if len(courses) != 0: return courses
     return None
 
 def get_sorted_sections(course_list: list[Course], schedule: Schedule) -> list[Section]:
-    # all courses in this course list have the same priority, so the only thing that matters is the cost function
+    # sorts the valid sections of each course that hasn't been added to the schedule yet by cost
     sections: list[Section] = []
     costs: list[int] = []
     for course in course_list:
         for section in course.sections:
-            sections.append(section)
-            # calc cost of schedule with
-            schedule.add(section)
-            costs.append(-schedule.cost()) # do negative to sort from min to max
-            schedule.remove(section)
+            if schedule.section_is_valid(section):
+                sections.append(section)
+                costs.append(schedule.cost(course_list, section))
     sorted_sections = [sec for _, sec in sorted(zip(costs, sections), key=lambda c_sec: c_sec[0])]
     return sorted_sections
             
@@ -114,7 +113,7 @@ def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_
     # no more classes to pick from, but not at desired number. User error, decide to interpret as success
     if next_courses is None: return Schedule 
     
-    # this is where cost function gets applied
+    # this is where cost function gets applied to all potential additions
     sorted_sections = get_sorted_sections(next_courses, curr_schedule)
     
     for section in sorted_sections:

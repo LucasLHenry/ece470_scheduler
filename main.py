@@ -1,7 +1,7 @@
 # RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
 import courses_scheduler as scheduler
-import algo.cost_function as cost
+#import algo.cost_function as cost
 
 def main():
     print("Welcome to the automated UVic course scheduler!")

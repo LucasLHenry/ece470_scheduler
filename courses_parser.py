@@ -93,7 +93,7 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         if inpt.upper() == "ALL":
             course_list = get_all_courses()
             for course in course_list:
-                course.priority = int(math.ceil(3*random.random()))
+                course.set_priority(int(math.ceil(3*random.random())))
             break
         elif inpt:
             course = find_course(inpt)
@@ -103,7 +103,7 @@ def prompt_for_courses() -> tuple[list[Course], int]:
                     priority_str = input(f"priority for {course.name}: ")
                     priority_int = parse_priority(priority_str)
                     if priority_int is not None:
-                        course.priority = priority_int
+                        course.set_priority(priority_int)
                         break
                     else:
                         print("priority int must be an integer between 1 and 3")
