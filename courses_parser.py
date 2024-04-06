@@ -2,7 +2,6 @@ import json, os
 from typing import Union
 from classes import *
 from aux_functions import get_time, gen_time
-import random, math
 
 database_filename = "db.json"
 database_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), database_filename)
@@ -84,17 +83,18 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         tuple[list[Course], int]: all the courses it found in the database matching the prompt, 
         with priority fields filled, as well as number of desired courses.
     """
-    print("Enter course names. Enter 'all' for all database courses. Press enter on a blank line when finished.")
-    print("After each course entered, give the priority level for that course. 1 is top priority (required courses),")
-    print("2 is medium priority (electives), and 3 is lowest priority (backup electives)")
+    print("\nEnter course names.")
+    print("After each course entered, give the priority level for that course. 1 is top priority (required courses), 2 is medium priority (electives), and 3 is lowest priority (backup electives).")
+    print("Enter 'all' to add all database courses, assigned priority 3. Adding a course more than once will overwrite its previous priority. Inputs are not case/space sensitive.")
+    print("Press enter on a blank line when finished.\n")
     course_list = []
     while(True):
         inpt = input("Add course(s): ")
         if inpt.upper() == "ALL":
             course_list = get_all_courses()
             for course in course_list:
-                course.set_priority(int(math.ceil(3*random.random())))
-            break
+                course.set_priority(3)
+            print("added all database courses")
         elif inpt:
             course = find_course(inpt)
             if course:
@@ -107,6 +107,8 @@ def prompt_for_courses() -> tuple[list[Course], int]:
                         break
                     else:
                         print("priority int must be an integer between 1 and 3")
+                #if a course is already added it is overwritten
+                if course_list.count(course) != 0: course_list.remove(course)
                 course_list.append(course)
                 print("Successfully added", course.name)
             else:
@@ -126,6 +128,7 @@ def prompt_for_courses() -> tuple[list[Course], int]:
             print("number of courses must be greater than 0")
             continue
         break
+    print("\n~~~~~~~~~~~~~~~~~~~Ouput~~~~~~~~~~~~~~~~~~~")
     return course_list, desired_num_courses
 
 
@@ -169,6 +172,36 @@ def gen_section(section_dict: dict, course_name: str) -> Union[Section, bool]:
     days = section_dict["days"]
     return Section(name, course_name, start_time, end_time, days)
 
+def output_schedule(sched: Schedule):
+    """Prints schedule found in a nice way for user to see
+
+    Args:
+        sched (Schedule): schedule object
+
+    Returns:
+        Printed schedule with courses in order of days and time from monday to friday
+    """
+    days = {"M": [], "T": [], "W": [], "R": [], "F": []}
+    day_names = {
+    "M": "MONDAY",
+    "T": "TUESDAY",
+    "W": "WEDNESDAY",
+    "R": "THURSDAY",
+    "F": "FRIDAY"
+    }
+    for course in sched.sections:
+        for day in course.days:
+            days[day].append(course)
+
+    for day in days:
+        if len(days[day]) == 0:
+            print(f"{day_names[day]}: No Classes")
+        else:
+            print(f"{day_names[day]}:")
+            sorted_courses = sorted(days[day], key=lambda cour: cour.start_time)
+            for course in sorted_courses:
+                print(f"\t{course}")
+    print("")
 
 def main():  # tests the functions
     print(get_all_courses())

@@ -1,116 +1,66 @@
 # RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
 from classes import Schedule, Section, Course
-import operator, copy
-from typing import Union, Optional
-
-def sort_courses(courses_list) -> list[Course]:
-    """sorts courses by number of available sections to make search tree more efficient. 
-    
-    Args:
-        courses_list (list[Course]): list to be sorted
-
-    Returns:
-        list[Course]: sorted list
-    """
-    return sorted(courses_list, key=lambda Course: Course.num_sections)
-
-# def recur_schedule(courses_list: list[Course], num_courses_goal: int, sched_list: list[Schedule] = [], curr_schedule: Schedule = Schedule(), curr_course_index: int = 0) -> tuple[Schedule, bool]:
-#     """recursively explores the solution space until it finds all possible schedules
-#     Args:
-#         courses_list (list[Course]): courses to be added to the schedule
-#         curr_schedule (Schedule): schedule that courses will be added to. Acts as the nodes of the tree
-#         curr_course_index (int): internal to recursion, used to keep track of how many courses have been added. Node counter in tree
-
-#     Returns:
-#         Bool: True if all courses have been checked, false otherwise
-#         list[Schedule]: list of possible schedules that either have the goal number of courses, or as close as could be attained with a particular course
-#         Schedule: successful schedule with added courses. Empty schedule if unsuccessful
-#         Bool: True if successful, False if unable to find a schedule that includes all courses
-#     """
-#     if curr_course_index == len(courses_list):
-#         return True, sched_list, curr_schedule, curr_course_index
-    
-#     if curr_schedule.num_sections == num_courses_goal:
-#         sched_list.append(copy.deepcopy(curr_schedule))
-#         return False, sched_list, curr_schedule, curr_course_index - 1
-    
-#     curr_section_index = 0
-#     new_course_index = curr_course_index
-
-#     while curr_section_index < courses_list[curr_course_index].num_sections:
-#         sectn = courses_list[curr_course_index].sections[curr_section_index]
-#         if curr_schedule.section_is_valid(sectn):
-#             curr_schedule.add(sectn)
-#             no_more_courses, sched_list, curr_schedule, new_course_index = recur_schedule(courses_list, num_courses_goal, sched_list, curr_schedule, curr_course_index + 1)
-#             if no_more_courses:
-#                 return True, sched_list, curr_schedule, curr_course_index
-#             curr_schedule.remove(sectn)
-            
-#         if new_course_index == curr_course_index:
-#             curr_section_index += 1
-#         else:
-#             curr_course_index = new_course_index
-#             curr_section_index = 0
-    
-#     sched_list.append(copy.deepcopy(curr_schedule))
-#     return False, sched_list, curr_schedule, curr_course_index 
-
-def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:
-    """initializes recursive scheduler
-    
-    Args:
-        courses_list (list[Course]): courses to be added to the schedule
-        num_courses_goal (int): number of courses desired by user
-
-    Returns:
-        Schedule: successful schedule with added courses. Empty schedule if unsuccessful
-        or
-        Bool: False if unsuccessful
-    """
-    schedule = Schedule()
-    result = backtracking_search(schedule, courses_list, num_courses_goal)
-    if result is None: return False
-    return schedule
-    
-
-def course_in_schedule(schedule: Schedule, course: Course) -> bool:
-    for section in schedule.sections:
-        if section.course_name.upper() == course.name.upper():
-            return True
-    return False
+from typing import Optional
 
 def get_next_courses(schedule: Schedule, course_list: list[Course]) -> Optional[list[Course]]:
-    highest_priority = 3
+    """finds courses that have not yet been added to the schedule
+    
+    Args:
+        schedule (Schedule): current schedule
+        courses_list (list[Course]): courses requested by user to be added to the schedule
+
+    Returns:
+        list[Course]: list of courses that the user has requested but are not yet in the schedule
+        or
+        None: None if there are no user requested courses not in the schedule remaining
+    """
     courses = []
     for course in course_list:
-        if not course_in_schedule(schedule, course):
+        if not schedule.course_in_schedule(course):
             courses.append(course)
-            # if course.priority == highest_priority: courses.append(course)
-            # elif course.priority < highest_priority:
-            #     highest_priority = course.priority
-            #     courses = [course]
     if len(courses) != 0: return courses
     return None
 
 def get_sorted_sections(course_list: list[Course], schedule: Schedule) -> list[Section]:
-    # sorts the valid sections of each course that hasn't been added to the schedule yet by cost
+    """from the list of courses that have yet to be added, sorts the valid sections of each course by cost
+    Args:
+        schedule (Schedule): current schedule
+        course_list (list[Course]): list of courses intended to be added to the schedule
+
+    Returns:
+        list[Section]: list of sections to be added, sorted from least cost to highest cost
+    """
     sections: list[Section] = []
     costs: list[int] = []
     for course in course_list:
         for section in course.sections:
             if schedule.section_is_valid(section):
                 sections.append(section)
-                costs.append(schedule.cost(course_list, section))
+                costs.append(schedule.cost(section, course_list)) #cost is calculated here
     sorted_sections = [sec for _, sec in sorted(zip(costs, sections), key=lambda c_sec: c_sec[0])]
     return sorted_sections
-            
 
-def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_desired_courses: int) -> Optional[Schedule]:
+def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_courses_goal: int) -> Optional[Schedule]:
+    """recursive backtracking scheduler. Explores the solution space until the goal number of courses in the schedule is found, or it runs out of courses to add.
+    The current schedule represents the current node, each child node has one added section.
+    Uses cost function to inform search, checks lowest cost possibilities first. -> least-cost search.
+    As long as the cost function is working correctly, this should find the optimal solution without any backtracking
+    
+    Args:
+        curr_schedule (Schedule): current schedule
+        course_list (list[Course]): list of courses intended to be added to the schedule
+        num_courses_goal (int): goal number of courses in the schedule as determined by user
+
+    Returns:
+        Schedule: successful schedule with as many courses as possible towards the goal number of courses
+        or
+        Bool: None if unsuccessful
+    """
     # if assignment is complete, return assignment
-    if curr_schedule.num_sections == num_desired_courses: return Schedule
+    if curr_schedule.num_sections == num_courses_goal: return Schedule
     next_courses = get_next_courses(curr_schedule, course_list)
-    # no more classes to pick from, but not at desired number. User error, decide to interpret as success
+    # no more classes to pick from, but not at desired number. Return possibility with most courses
     if next_courses is None: return Schedule 
     
     # this is where cost function gets applied to all potential additions
@@ -118,49 +68,34 @@ def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_
     
     for section in sorted_sections:
         curr_schedule.add(section)
-        result: Optional[Schedule] = backtracking_search(curr_schedule, course_list, num_desired_courses)
+        result: Optional[Schedule] = backtracking_search(curr_schedule, course_list, num_courses_goal)
         if result is not None: return result
         curr_schedule.remove(section)
     return None
-    
-    
 
-def output(sched: Schedule):
-    """Prints schedule found in a nice way for user to see
-
+def build_schedule(courses_list: list[Course], num_courses_goal: int) -> Schedule:
+    """initializes recursive scheduler
+    
     Args:
-        sched (Schedule): schedule object
+        courses_list (list[Course]): courses requested by user to be added to the schedule
+        num_courses_goal (int): goal number of courses in the schedule as determined by user
 
     Returns:
-        Printed schedule with courses in order of days and time from monday to friday
+        Schedule: successful schedule with added courses
+        or
+        Bool: False if unsuccessful
     """
-    days = {"M": [], "T": [], "W": [], "R": [], "F": []}
-    day_names = {
-    "M": "MONDAY",
-    "T": "TUESDAY",
-    "W": "WEDNESDAY",
-    "R": "THURSDAY",
-    "F": "FRIDAY"
-    }
-    for course in sched.sections:
-        for day in course.days:
-            days[day].append(course)
-
-    for day in days:
-        if len(days[day]) == 0:
-            print(f"{day_names[day]}: No Classes")
-        else:
-            print(f"{day_names[day]}:")
-            sorted_courses = sorted(days[day], key=lambda cour: cour.start_time)
-            for course in sorted_courses:
-                print(f"\t{course}")
-
-
+    schedule = Schedule()
+    result = backtracking_search(schedule, courses_list, num_courses_goal)
+    if result is None: return False
+    return schedule
 
 def test():
+    """used to debug scheduler"""
     courses_list = parser.get_all_courses()
+    for course in courses_list:
+        course.set_priority(1)
     schedule = build_schedule(courses_list, len(courses_list))
-    return schedule
     print("new schedule:")
     for i in schedule.sections:
         print(i)
