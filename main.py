@@ -11,10 +11,11 @@ def main():
     if schedule == False:
         print("failed to find valid schedule")
     else:
+        print("\n~~~~~~~~~~~~~~~~~~Output~~~~~~~~~~~~~~~~~~")
         print("\n   New schedule includes:")
         for sectn in schedule.sections:
             print(f"{sectn} {sectn.days }")
-        print("\n   Weekly Calendar:")
+        print("\n   Weekly calendar:")
         parser.output_schedule(schedule)
 
 if __name__ == "__main__":

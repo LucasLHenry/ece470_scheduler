@@ -101,7 +101,7 @@ def prompt_for_courses() -> tuple[list[Course], int]:
             course_list = get_all_courses()
             for course in course_list:
                 course.set_priority(3)
-            print("added all database courses")
+            print("added all database courses with priority 3")
         elif inpt:
             courses = find_courses(inpt)
             for course in courses:
@@ -136,7 +136,6 @@ def prompt_for_courses() -> tuple[list[Course], int]:
             print("number of courses must be greater than 0 and less than 7 (as per UVic enrollment policy)")
             continue
         break
-    print("\n~~~~~~~~~~~~~~~~~~Ouput~~~~~~~~~~~~~~~~~~")
     return course_list, desired_num_courses
 
 
