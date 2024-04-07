@@ -93,7 +93,7 @@ def prompt_for_courses() -> tuple[list[Course], int]:
     print("\nEnter course names. Names can be one at a time, or separated by commas.")
     print("After each course is entered, enter the priority level for that course. 1 is top priority (required courses), 2 is medium priority (electives), and 3 is lowest priority (backup electives).")
     print("Enter 'all' to add all database courses, assigned priority 3. Adding a course more than once will overwrite its previous priority. Inputs are not case/space sensitive.")
-    print("Press enter on a blank line when finished.\n")
+    print("Enter a blank course name when finished. Then enter the max number of courses you want in your schedule.\n")
     course_list = []
     while(True):
         inpt = input("Add course(s): ")
@@ -132,11 +132,11 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         except ValueError:
             print("number of classes must be an integer")
             continue
-        if desired_num_courses < 1:
-            print("number of courses must be greater than 0")
+        if desired_num_courses < 1 or desired_num_courses > 6:
+            print("number of courses must be greater than 0 and less than 7 (as per UVic enrollment policy)")
             continue
         break
-    print("\n~~~~~~~~~~~~~~~~~~~Ouput~~~~~~~~~~~~~~~~~~~")
+    print("\n~~~~~~~~~~~~~~~~~~Ouput~~~~~~~~~~~~~~~~~~")
     return course_list, desired_num_courses
 
 

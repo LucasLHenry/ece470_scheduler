@@ -24,6 +24,7 @@ def get_next_courses(schedule: Schedule, course_list: list[Course]) -> Optional[
 
 def get_sorted_sections(course_list: list[Course], schedule: Schedule) -> list[Section]:
     """from the list of courses that have yet to be added, sorts the valid sections of each course by cost
+
     Args:
         schedule (Schedule): current schedule
         course_list (list[Course]): list of courses intended to be added to the schedule
@@ -56,16 +57,11 @@ def backtracking_search(curr_schedule: Schedule, course_list: list[Course], num_
         Schedule: successful schedule with as many courses as possible towards the goal number of courses
         or
         Bool: None if unsuccessful
-    """
-    # if assignment is complete, return assignment
-    if curr_schedule.num_sections == num_courses_goal: return Schedule
+    """    
+    if curr_schedule.num_sections == num_courses_goal: return Schedule # if assignment is complete, return assignment
     next_courses = get_next_courses(curr_schedule, course_list)
-    # no more classes to pick from, but not at desired number. Return possibility with most courses
-    if next_courses is None: return Schedule 
-    
-    # this is where cost function gets applied to all potential additions
-    sorted_sections = get_sorted_sections(next_courses, curr_schedule)
-    
+    if next_courses is None: return Schedule # no more classes to pick from, but not at desired number. Return possibility with most courses
+    sorted_sections = get_sorted_sections(next_courses, curr_schedule)# this is where cost function gets applied to all potential additions, returned as a cost-sorted list of sections to add
     for section in sorted_sections:
         curr_schedule.add(section)
         result: Optional[Schedule] = backtracking_search(curr_schedule, course_list, num_courses_goal)
