@@ -1,8 +1,7 @@
 import json, os
 from typing import Union
 from classes import *
-from aux_functions import get_time
-import random, math
+from aux_functions import get_time, gen_time
 
 database_filename = "db.json"
 database_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), database_filename)
@@ -41,23 +40,30 @@ def list_all_courses(Print = False) -> list[str]:
             print(f"{crs['course_name']} with {len(crs['sections'])} section{plural}")
     return names_list
 
-def find_course(course_str: str) -> Union[Course, bool]:
-    """searches for a course with a specified name (ie MATH 100)
-    if it can't find the course, returns False instead of the course object
+def find_courses(courses_str: str) -> list[Union[Course, str]]:
+    """searches for a course with a specified name (ie MATH 100) in a comma separated list,
+    returns a list with the course objects. if it can't find the course, appends the input string instead of the course object
 
     Args:
-        course_str (str): input course name. not case sensitive, ignores spaces, everything else sensitive
+        courses_str (list[str]): input course name. not case sensitive, ignores spaces, everything else sensitive
 
     Returns:
-        Union[Course, bool]: either the course (if it was found) or False, if it was not
+        list[Union[Course, str]]: a list consisting of either the courses (when they are found) or the input name string (when they are not found)
     """
+    output_list = []
+    input_list = courses_str.upper().replace(" ", "").split(",")
     with open(database_file) as f:
         db = json.load(f)
         courses_list = db["courses"]
-        for crs in courses_list:
-            if crs["course_name"].replace(" ", "") == course_str.upper().replace(" ", ""):                   
-                return gen_course(crs)
-        return False
+        for course_str in input_list:
+            found = False
+            for crs in courses_list:
+                if course_str == crs["course_name"].replace(" ", ""):                   
+                    output_list.append(gen_course(crs))
+                    found = True
+                    break
+            if not found: output_list.append(course_str)
+        return output_list
     
 def parse_priority(priority_str: str) -> Optional[int]:
     """parses a priority value into its corresponding integer
@@ -84,33 +90,37 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         tuple[list[Course], int]: all the courses it found in the database matching the prompt, 
         with priority fields filled, as well as number of desired courses.
     """
-    print("Enter course names. Enter 'all' for all database courses. Press enter on a blank line when finished.")
-    print("After each course entered, give the priority level for that course. 1 is top priority (required courses),")
-    print("2 is medium priority (electives), and 3 is lowest priority (backup electives)")
+    print("\nEnter course names. Names can be one at a time, or separated by commas.")
+    print("After each course is entered, enter the priority level for that course. 1 is top priority (required courses), 2 is medium priority (electives), and 3 is lowest priority (backup electives).")
+    print("Enter 'all' to add all database courses, assigned priority 3. Adding a course more than once will overwrite its previous priority. Inputs are not case/space sensitive.")
+    print("Enter a blank course name when finished. Then enter the max number of courses you want in your schedule.\n")
     course_list = []
     while(True):
         inpt = input("Add course(s): ")
         if inpt.upper() == "ALL":
             course_list = get_all_courses()
             for course in course_list:
-                course.priority = int(math.ceil(3*random.random()))
-            break
+                course.set_priority(3)
+            print("added all database courses")
         elif inpt:
-            course = find_course(inpt)
-            if course:
-                # get priority level for course
-                while True:
-                    priority_str = input(f"priority for {course.name}: ")
-                    priority_int = parse_priority(priority_str)
-                    if priority_int is not None:
-                        course.priority = priority_int
-                        break
-                    else:
-                        print("priority int must be an integer between 1 and 3")
-                course_list.append(course)
-                print("Successfully added", course.name)
-            else:
-                print("Failed to find", inpt, "in database")
+            courses = find_courses(inpt)
+            for course in courses:
+                if isinstance(course, Course):
+                    # get priority level for course
+                    while True:
+                        priority_str = input(f"priority for {course.name}: ")
+                        priority_int = parse_priority(priority_str)
+                        if priority_int is not None:
+                            course.set_priority(priority_int)
+                            break
+                        else:
+                            print("priority int must be an integer between 1 and 3")
+                    #if a course is already added it is overwritten
+                    if course_list.count(course) != 0: course_list.remove(course)
+                    course_list.append(course)
+                    print("Successfully added", course.name)
+                else:
+                    print("Failed to find", course, "in database")
         else:
             break
     
@@ -122,10 +132,11 @@ def prompt_for_courses() -> tuple[list[Course], int]:
         except ValueError:
             print("number of classes must be an integer")
             continue
-        if desired_num_courses < 1:
-            print("number of courses must be greater than 0")
+        if desired_num_courses < 1 or desired_num_courses > 6:
+            print("number of courses must be greater than 0 and less than 7 (as per UVic enrollment policy)")
             continue
         break
+    print("\n~~~~~~~~~~~~~~~~~~Ouput~~~~~~~~~~~~~~~~~~")
     return course_list, desired_num_courses
 
 
@@ -169,6 +180,36 @@ def gen_section(section_dict: dict, course_name: str) -> Union[Section, bool]:
     days = section_dict["days"]
     return Section(name, course_name, start_time, end_time, days)
 
+def output_schedule(sched: Schedule):
+    """Prints schedule found in a nice way for user to see
+
+    Args:
+        sched (Schedule): schedule object
+
+    Returns:
+        Printed schedule with courses in order of days and time from monday to friday
+    """
+    days = {"M": [], "T": [], "W": [], "R": [], "F": []}
+    day_names = {
+    "M": "MONDAY",
+    "T": "TUESDAY",
+    "W": "WEDNESDAY",
+    "R": "THURSDAY",
+    "F": "FRIDAY"
+    }
+    for course in sched.sections:
+        for day in course.days:
+            days[day].append(course)
+
+    for day in days:
+        if len(days[day]) == 0:
+            print(f"{day_names[day]}: No Classes")
+        else:
+            print(f"{day_names[day]}:")
+            sorted_courses = sorted(days[day], key=lambda cour: cour.start_time)
+            for course in sorted_courses:
+                print(f"\t{course}")
+    print("")
 
 def main():  # tests the functions
     print(get_all_courses())
