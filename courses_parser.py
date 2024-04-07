@@ -1,7 +1,7 @@
 import json, os
 from typing import Union
 from classes import *
-from aux_functions import get_time, gen_time
+from aux_functions import get_time
 import random, math
 
 database_filename = "db.json"

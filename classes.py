@@ -4,6 +4,8 @@ from typing import Optional
 
 @dataclass
 class Section:
+    """class containing information on a specific course section
+    """
     section_name: str
     course_name: str
     start_time: int
@@ -20,6 +22,8 @@ class Section:
 
 @dataclass
 class Course:
+    """class containing information on a specific course. Includes list of sections
+    """
     name: str
     sections: list[Section]
     priority: Optional[int] = None
@@ -30,7 +34,9 @@ class Course:
 
 @dataclass
 class Schedule:
-    
+    """class continaing information for a given schedule. Contains a list of sections,
+    as well as methods to derive the cost of the schedule
+    """
     sections: list[Section]
 
     def __init__(self):
