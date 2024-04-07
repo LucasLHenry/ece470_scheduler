@@ -89,7 +89,8 @@ class Schedule:
                 if self.section_is_valid(future_section):
                     future_courses_checked += 1
                     if self.does_overlap(curr_section_to_be_added, future_section): overlap_cost += 1
-
-        return priority_cost + overlap_cost/future_courses_checked
+                    
+        if future_courses_checked != 0: return priority_cost + overlap_cost/future_courses_checked
+        return priority_cost
                     
                 
