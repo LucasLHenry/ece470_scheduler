@@ -37,7 +37,7 @@ def list_all_courses(Print = False) -> list[str]:
     if Print:
         for crs in sorted(db["courses"], key=lambda x: x["course_name"]):
             plural = 's' if len(crs['sections']) != 1 else ''
-            print(f"{crs['course_name']} with {len(crs['sections'])} section{plural}")
+            console.print(f"{crs['course_name']} with {len(crs['sections'])} section{plural}")
     return names_list
 
 def find_courses(courses_str: str) -> list[Union[Course, str]]:
