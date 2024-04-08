@@ -1,7 +1,7 @@
 import json, os
 from typing import Union
 from classes import *
-from aux_functions import get_time, gen_time
+from aux_functions import get_time
 
 database_filename = "db.json"
 database_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), database_filename)
@@ -37,7 +37,7 @@ def list_all_courses(Print = False) -> list[str]:
     if Print:
         for crs in sorted(db["courses"], key=lambda x: x["course_name"]):
             plural = 's' if len(crs['sections']) != 1 else ''
-            console.print(f"{crs['course_name']} with {len(crs['sections'])} section{plural}")
+            print(f"{crs['course_name']} with {len(crs['sections'])} section{plural}")
     return names_list
 
 def find_courses(courses_str: str) -> list[Union[Course, str]]:

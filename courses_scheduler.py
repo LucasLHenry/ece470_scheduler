@@ -1,4 +1,3 @@
-# RUN THIS FILE TO RUN THE PROGRAM
 import courses_parser as parser
 from classes import Schedule, Section, Course
 from typing import Optional
